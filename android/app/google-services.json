@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "436495756930",
+    "project_id": "bnqt-d1772",
+    "storage_bucket": "bnqt-d1772.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:436495756930:android:9b07838c386767a6e88e9b",
+        "android_client_info": {
+          "package_name": "com.example.lakebenquet"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFqtsaS6Y6Tl5XfYHmcG0SZT3icavx9sg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
