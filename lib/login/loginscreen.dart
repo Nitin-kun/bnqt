@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import '../screen/user_homescreen.dart'; // Assuming you have a separate UserHomeScreen widget
-import '../screen/admin_homescreen.dart'; // Assuming you have a separate AdminHomeScreen widget
+import '../screen/user/user_screen.dart'; // Assuming you have a separate UserScreen widget
+import '../screen/admin/admin_screen.dart'; // Assuming you have a separate AdminScreen widget
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -41,23 +41,24 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (user != null) {
         final String? email = user.email;
-
+        
         // Check if the email is "nitin.gml1@gmail.com"
         if (email == "nitin.gml1@gmail.com") {
-          // Navigate to AdminHomeScreen
+          // Navigate to AdminScreen
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const AdminHomeScreen()),
+            MaterialPageRoute(builder: (context) =>  AdminScreen(user: user,)),
           );
         } else {
-          // Navigate to UserHomeScreen for other users
+          // Navigate to UserScreen for other users
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const UserHomeScreen()),
+            MaterialPageRoute(builder: (context) =>  UserScreen(user: user,)),
           );
         }
       }
     } catch (e) {
+      
       print('Sign in failed: $e');
     }
   }

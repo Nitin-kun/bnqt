@@ -1,13 +1,17 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:lakebenquet/screen/homescreen.dart';
+import 'package:lakebenquet/screen/profilescreen.dart';
 
-class UserHomeScreen extends StatefulWidget {
-  const UserHomeScreen({super.key});
+class UserScreen extends StatefulWidget {
+ final  User user;
+   const UserScreen({super.key, required this.user});
 
   @override
-  _UserHomeScreenState createState() => _UserHomeScreenState();
+  _UserScreenState createState() => _UserScreenState();
 }
 
-class _UserHomeScreenState extends State<UserHomeScreen> {
+class _UserScreenState extends State<UserScreen> {
   final PageController _pageController = PageController();
   int _selectedIndex = 0;
  
@@ -57,10 +61,10 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
             _selectedIndex = index;
           });
         },
-        children: const [
-          Center(child: Text("Home Screen")),
-          Center(child: Text("Photos Screen")),
-          Center(child: Text("Profile Screen")),
+        children: [
+          const HomeScreen(),
+          const Center(child: Text("Photos Screen")),
+          ProfileScreen(user:  widget.user )
         ],
       ),
     );
