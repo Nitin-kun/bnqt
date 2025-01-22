@@ -12,10 +12,9 @@ class EditCalander extends StatefulWidget {
 }
 
 class _EditCalanderState extends State<EditCalander> {
-  List<DateTime> selectedDates = []; // Dates selected by the admin
-  List<DateTime> unavailableDates = []; // Dates fetched from Firebase
+  List<DateTime> selectedDates = [];
+  List<DateTime> unavailableDates = [];
 
-  // Firebase Realtime Database reference for your specific URL
   final DatabaseReference _database = FirebaseDatabase.instanceFor(
     app: Firebase.app(),
     databaseURL:
@@ -25,11 +24,9 @@ class _EditCalanderState extends State<EditCalander> {
   @override
   void initState() {
     super.initState();
-    // Fetch unavailable dates from Firebase when the screen loads
     _fetchUnavailableDates();
   }
 
-  // Fetch the unavailable dates from Firebase
   Future<void> _fetchUnavailableDates() async {
     try {
       final DataSnapshot snapshot =
@@ -37,22 +34,17 @@ class _EditCalanderState extends State<EditCalander> {
       if (snapshot.exists) {
         List<dynamic> dateStrings = snapshot.value as List<dynamic>;
         setState(() {
-          unavailableDates = dateStrings.map((dateString) {
-            return DateTime.parse(
-                dateString); // Parse the date strings back to DateTime
-          }).toList();
+          unavailableDates = dateStrings
+              .map((dateString) => DateTime.parse(dateString))
+              .toList();
         });
-        print(unavailableDates);
       }
     } catch (error) {
-      print('Failed to fetch unavailable dates: $error');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to fetch unavailable dates: $error')),
-      );
+          SnackBar(content: Text('Failed to fetch dates: $error')));
     }
   }
 
-  // Method to handle date selection
   void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) {
     if (args.value is List<DateTime>) {
       setState(() {
@@ -61,69 +53,68 @@ class _EditCalanderState extends State<EditCalander> {
     }
   }
 
-  // Method to save the selected dates to Firebase and append to existing unavailable dates
   Future<void> _saveDatesToFirebase() async {
     if (selectedDates.isNotEmpty) {
-      // Combine unavailable dates and selected dates, avoiding duplicates
       Set<DateTime> combinedDates = {...unavailableDates, ...selectedDates};
-
-      // Convert DateTime objects to strings (only the date part) for Firebase storage
-      List<String> dateStrings = combinedDates.map((date) {
-        return DateFormat('yyyy-MM-dd')
-            .format(date); // Format the date to 'yyyy-MM-dd'
-      }).toList();
+      List<String> dateStrings = combinedDates
+          .map((date) => DateFormat('yyyy-MM-dd').format(date))
+          .toList();
 
       try {
-        // Save the combined dates to Firebase
         await _database.child('unavailable_dates').set(dateStrings);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Dates saved successfully!')),
-        );
-
-        // After saving, update the unavailableDates list
+            const SnackBar(content: Text('Dates saved successfully!')));
         setState(() {
           unavailableDates = combinedDates.toList();
-          selectedDates = []; // Clear selected dates after saving
+          selectedDates = [];
         });
       } catch (error) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to save dates: $error')),
-        );
+            SnackBar(content: Text('Failed to save dates: $error')));
       }
     } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('No dates selected!')));
+    }
+  }
+
+  Future<void> _removeDateFromFirebase(DateTime date) async {
+    setState(() {
+      unavailableDates.remove(date);
+    });
+
+    List<String> updatedDates = unavailableDates
+        .map((date) => DateFormat('yyyy-MM-dd').format(date))
+        .toList();
+    try {
+      await _database.child('unavailable_dates').set(updatedDates);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('No dates selected!')),
-      );
+          const SnackBar(content: Text('Date removed successfully!')));
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to remove date: $error')));
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Select Dates'),
-      ),
+      appBar: AppBar(title: const Text('Select Dates')),
       body: Column(
         children: [
-          // DateRangePicker with multi-selection enabled
           SfDateRangePicker(
             view: DateRangePickerView.month,
             selectionMode: DateRangePickerSelectionMode.multiple,
-            onSelectionChanged: _onSelectionChanged, // Handle selection change
+            onSelectionChanged: _onSelectionChanged,
             initialSelectedDates: unavailableDates,
-            // Pass unavailable dates to initialSelectedDates
             monthViewSettings: DateRangePickerMonthViewSettings(
-              specialDates: unavailableDates,
-            ),
+                specialDates: unavailableDates),
             monthCellStyle: const DateRangePickerMonthCellStyle(
               specialDatesDecoration:
                   BoxDecoration(color: Colors.purple, shape: BoxShape.circle),
             ),
           ),
-
           const SizedBox(height: 20),
-
-          // Display the unavailable dates fetched from Firebase
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -138,8 +129,12 @@ class _EditCalanderState extends State<EditCalander> {
                         String formattedDate = DateFormat('yyyy-MM-dd')
                             .format(unavailableDates[index]);
                         return ListTile(
-                          title: Text(
-                              formattedDate), // Display each unavailable date without time
+                          title: Text(formattedDate),
+                          trailing: IconButton(
+                            icon: const Icon(Icons.delete, color: Colors.red),
+                            onPressed: () => _removeDateFromFirebase(
+                                unavailableDates[index]),
+                          ),
                         );
                       },
                     ),
@@ -148,12 +143,10 @@ class _EditCalanderState extends State<EditCalander> {
               ),
             ),
           ),
-
-          // Button to save the selected dates to Firebase and append to the unavailable dates
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: ElevatedButton(
-              onPressed: _saveDatesToFirebase, // Trigger saving dates
+              onPressed: _saveDatesToFirebase,
               child: const Text('Save Dates to Firebase'),
             ),
           ),

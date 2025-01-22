@@ -18,14 +18,15 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         brightness: Brightness.light,
-        primaryColor: const Color(0xFFB8860B), // Rich gold color
+        primaryColor: Colors.orange, // Rich gold color
         colorScheme: ColorScheme.fromSwatch(
           primarySwatch: Colors.amber,
           accentColor: Colors.amberAccent,
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFFB8860B), // Rich gold color for buttons
+            backgroundColor:
+                const Color(0xFFB8860B), // Rich gold color for buttons
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),
@@ -50,12 +51,14 @@ class MyApp extends StatelessWidget {
           titleMedium: TextStyle(
             fontSize: 18.0,
             fontWeight: FontWeight.w500,
-            color: Color.fromARGB(255, 255, 183, 0), // Rich gold for text highlights
+            color: Color.fromARGB(
+                255, 255, 183, 0), // Rich gold for text highlights
           ),
         ),
         scaffoldBackgroundColor: Colors.white,
         appBarTheme: const AppBarTheme(
-          backgroundColor: Color.fromARGB(255, 255, 184, 6), // Rich gold app bar color
+          backgroundColor:
+              Color.fromARGB(255, 255, 184, 6), // Rich gold app bar color
           titleTextStyle: TextStyle(
             color: Colors.white,
             fontSize: 20,

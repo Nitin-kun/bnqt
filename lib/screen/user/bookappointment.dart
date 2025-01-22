@@ -1,11 +1,10 @@
-import 'dart:io'; // For platform check
-import 'package:firebase_auth/firebase_auth.dart';
+// For platform check
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart'; // Date picker package
 import 'package:intl/intl.dart'; // For formatting date
-import 'package:url_launcher/url_launcher.dart'; // For launching WhatsApp
+// For launching WhatsApp
 
 class BookAppointmentScreen extends StatefulWidget {
   const BookAppointmentScreen({super.key});
@@ -222,23 +221,25 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
       // Collect form data
       String name = _nameController.text;
       String contact = _contactController.text;
-      String formattedDate = DateFormat(dateFormatString).format(_appointmentDate!);
+      String formattedDate =
+          DateFormat(dateFormatString).format(_appointmentDate!);
 
       // Firebase Database reference
-      final DatabaseReference _db = FirebaseDatabase.instanceFor(
+      final DatabaseReference db = FirebaseDatabase.instanceFor(
               app: Firebase.app(),
-              databaseURL: 'https://bnqt-d1772-default-rtdb.asia-southeast1.firebasedatabase.app/') // Replace with your Firebase Database URL
+              databaseURL:
+                  'https://bnqt-d1772-default-rtdb.asia-southeast1.firebasedatabase.app/') // Replace with your Firebase Database URL
           .ref();
 
+      String timestamp = DateFormat('yyyyMMddHHmmss')
+          .format(DateTime.now()); // Generate timestamp as key
 
-          String timestamp = DateFormat('yyyyMMddHHmmss').format(DateTime.now()); // Generate timestamp as key
-
-_db.child('appointments/$timestamp').set({
-  'name': name,
-  'contact': contact,
-  'date': formattedDate,
-  'time': _selectedTime,
-}).then((_) {
+      db.child('appointments/$timestamp').set({
+        'name': name,
+        'contact': contact,
+        'date': formattedDate,
+        'time': _selectedTime,
+      }).then((_) {
         // Success - Show confirmation dialog or toast
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Appointment successfully booked!')),
