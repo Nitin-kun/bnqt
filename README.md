@@ -11,21 +11,20 @@ Welcome to the **Lake Garden Banquet Hall Booking App**! This app is designed to
 - **Appointment Booking**: Schedule appointments for consultations or site visits.
 
 ## Screenshots
-
 ### Welcome Screen
-![Welcome Screen](https://github.com/Nitin-kun/lake-garden-banquet-hall/blob/main/githubimg/welcome%20screen.jpg?raw=true)
+![Welcome Screen](./githubimg/welcome%20screen.jpg)
 
 ### Home Screen
-![Home Screen](https://github.com/Nitin-kun/lake-garden-banquet-hall/blob/main/githubimg/honeScreen.jpg?raw=true)
+![Home Screen](./githubimg/honeScreen.jpg)
 
 ### Book Appointment
-![Book Appointment](https://github.com/Nitin-kun/lake-garden-banquet-hall/blob/main/githubimg/book%20appointment.jpg?raw=true)
+![Book Appointment](./githubimg/book%20appointment.jpg)
 
 ### Book Banquet
-![Book Banquet](https://github.com/Nitin-kun/lake-garden-banquet-hall/blob/main/githubimg/book%20banquet.jpg?raw=true)
+![Book Banquet](./githubimg/book%20banquet.jpg)
 
 ### Payment Screen
-![Payment Screen](https://github.com/Nitin-kun/lake-garden-banquet-hall/blob/main/githubimg/paymet%20screen.jpg?raw=true)
+![Payment Screen](./githubimg/paymet%20screen.jpg)
 
 ## How to Use
 
