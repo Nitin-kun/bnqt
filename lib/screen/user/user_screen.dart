@@ -1,11 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:lakebenquet/screen/homescreen.dart';
+import 'package:lakebenquet/screen/userhomescreen.dart';
 import 'package:lakebenquet/screen/profilescreen.dart';
 
 class UserScreen extends StatefulWidget {
- final  User user;
-   const UserScreen({super.key, required this.user});
+  final User user;
+  const UserScreen({super.key, required this.user});
 
   @override
   _UserScreenState createState() => _UserScreenState();
@@ -14,7 +14,7 @@ class UserScreen extends StatefulWidget {
 class _UserScreenState extends State<UserScreen> {
   final PageController _pageController = PageController();
   int _selectedIndex = 0;
- 
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -34,21 +34,21 @@ class _UserScreenState extends State<UserScreen> {
               onPressed: () => _onItemTapped(0),
               icon: Icon(
                 Icons.home,
-                color: _selectedIndex == 0 ? Colors.blue : Colors.grey,
+                color: _selectedIndex == 0 ? Colors.orange : Colors.grey,
               ),
             ),
             IconButton(
               onPressed: () => _onItemTapped(1),
               icon: Icon(
                 Icons.photo_camera_back,
-                color: _selectedIndex == 1 ? Colors.blue : Colors.grey,
+                color: _selectedIndex == 1 ? Colors.orange : Colors.grey,
               ),
             ),
             IconButton(
               onPressed: () => _onItemTapped(2),
               icon: Icon(
                 Icons.person,
-                color: _selectedIndex == 2 ? Colors.blue : Colors.grey,
+                color: _selectedIndex == 2 ? Colors.orange : Colors.grey,
               ),
             ),
           ],
@@ -64,7 +64,7 @@ class _UserScreenState extends State<UserScreen> {
         children: [
           const HomeScreen(),
           const Center(child: Text("Photos Screen")),
-          ProfileScreen(user:  widget.user )
+          ProfileScreen(user: widget.user)
         ],
       ),
     );

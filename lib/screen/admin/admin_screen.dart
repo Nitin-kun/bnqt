@@ -1,7 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:lakebenquet/screen/admin/appointmentScreen.dart';
 import 'package:lakebenquet/screen/admin/editcalander.dart';
-import 'package:lakebenquet/screen/homescreen.dart';
+import 'package:lakebenquet/screen/userhomescreen.dart';
 import 'package:lakebenquet/screen/profilescreen.dart';
 
 class AdminScreen extends StatefulWidget {
@@ -31,7 +32,6 @@ class _AdminScreenState extends State<AdminScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-     
       bottomNavigationBar: BottomAppBar(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -76,7 +76,7 @@ class _AdminScreenState extends State<AdminScreen> {
         },
         children: [
           const HomeScreen(),
-          const Center(child: Text("Photos Screen")), // Placeholder for Photos Screen
+          const AppointmentScreen(),
           const EditCalander(),
           ProfileScreen(user: widget.user),
         ],

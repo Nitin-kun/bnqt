@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_datepicker/datepicker.dart';
+//import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -45,13 +45,13 @@ class _EditCalanderState extends State<EditCalander> {
     }
   }
 
-  void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) {
-    if (args.value is List<DateTime>) {
-      setState(() {
-        selectedDates = args.value;
-      });
-    }
-  }
+  // void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) {
+  //   if (args.value is List<DateTime>) {
+  //     setState(() {
+  //       selectedDates = args.value;
+  //     });
+  //   }
+  // }
 
   Future<void> _saveDatesToFirebase() async {
     if (selectedDates.isNotEmpty) {
@@ -102,18 +102,18 @@ class _EditCalanderState extends State<EditCalander> {
       appBar: AppBar(title: const Text('Select Dates')),
       body: Column(
         children: [
-          SfDateRangePicker(
-            view: DateRangePickerView.month,
-            selectionMode: DateRangePickerSelectionMode.multiple,
-            onSelectionChanged: _onSelectionChanged,
-            initialSelectedDates: unavailableDates,
-            monthViewSettings: DateRangePickerMonthViewSettings(
-                specialDates: unavailableDates),
-            monthCellStyle: const DateRangePickerMonthCellStyle(
-              specialDatesDecoration:
-                  BoxDecoration(color: Colors.purple, shape: BoxShape.circle),
-            ),
-          ),
+          // SfDateRangePicker(
+          //   view: DateRangePickerView.month,
+          //   selectionMode: DateRangePickerSelectionMode.multiple,
+          //   onSelectionChanged: _onSelectionChanged,
+          //   initialSelectedDates: unavailableDates,
+          //   monthViewSettings: DateRangePickerMonthViewSettings(
+          //       specialDates: unavailableDates),
+          //   monthCellStyle: const DateRangePickerMonthCellStyle(
+          //     specialDatesDecoration:
+          //         BoxDecoration(color: Colors.purple, shape: BoxShape.circle),
+          //   ),
+          // ),
           const SizedBox(height: 20),
           Expanded(
             child: Padding(

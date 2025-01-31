@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'billscreen.dart';
+
 class BookBnqtScreen extends StatefulWidget {
   final List<DateTime> unavailableDates;
 
@@ -34,16 +36,24 @@ class _BookBnqtScreenState extends State<BookBnqtScreen> {
   }
 
   Future<void> _selectDate(BuildContext context) async {
+    print("select dates");
+    // Find the first available date as the initial date
+    DateTime initialDate = DateTime.now();
+    while (widget.unavailableDates.contains(initialDate)) {
+      initialDate = initialDate.add(const Duration(days: 1));
+    }
+
     final DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
+      initialDate: null, // Use valid initial date
       firstDate: DateTime.now(),
       lastDate: DateTime(DateTime.now().year + 2),
       selectableDayPredicate: (date) {
-        // Disable unavailable dates
+        // Ensure unavailable dates are disabled
         return !widget.unavailableDates.contains(date);
       },
     );
+
     if (pickedDate != null && !selectedDates.contains(pickedDate)) {
       setState(() {
         selectedDates.add(pickedDate);
@@ -115,7 +125,10 @@ class _BookBnqtScreenState extends State<BookBnqtScreen> {
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 ElevatedButton(
-                  onPressed: () => _selectDate(context),
+                  onPressed: () {
+                    print("Choose Dates button pressed");
+                    _selectDate(context);
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.orange,
                   ),
@@ -170,10 +183,21 @@ class _BookBnqtScreenState extends State<BookBnqtScreen> {
               child: ElevatedButton(
                 onPressed: () {
                   final totalCost = calculateTotalCost();
+
                   print("Selected Event Type: $selectedEventType");
                   print("Selected Dates: $selectedDates");
                   print("Selected Services: $selectedServices");
                   print("Total Cost: $totalCost");
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (content) => BillScreen(
+                                selectedServices: selectedServices,
+                                totalCost: totalCost,
+                                selectedDates: selectedDates,
+                                selectedEventTypes: selectedEventType,
+                              )));
+
                   // Add your logic for "Proceed" here
                 },
                 style: ElevatedButton.styleFrom(

@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:lakebenquet/screen/user/bookappointment.dart';
 import 'package:lakebenquet/screen/user/bookBnqtScreen.dart';
-import 'package:syncfusion_flutter_datepicker/datepicker.dart';
+import 'package:lakebenquet/widgets/button.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:table_calendar/table_calendar.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -21,9 +24,8 @@ class _HomeScreenState extends State<HomeScreen> {
     'lib/assets/images/4.jpg',
   ];
 
-  List<DateTime> unavailableDates = []; // List to store unavailable dates
+  List<DateTime> unavailableDates = [];
 
-  // Firebase Realtime Database reference
   final DatabaseReference _database = FirebaseDatabase.instanceFor(
     app: Firebase.app(),
     databaseURL:
@@ -36,7 +38,6 @@ class _HomeScreenState extends State<HomeScreen> {
     _fetchUnavailableDates();
   }
 
-  // Fetch the unavailable dates from Firebase
   Future<void> _fetchUnavailableDates() async {
     try {
       final DataSnapshot snapshot =
@@ -58,17 +59,32 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  Future<void> _makecall() async {
+    final Uri url = Uri.parse("tel:+918521188010");
+    if (await canLaunchUrl(url)) {
+      launchUrl(url);
+    } else {
+      throw 'could not make the call $url';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Get screen size
     final size = MediaQuery.of(context).size;
     final double height = size.height;
     final double width = size.width;
 
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 12.0),
+            child:
+                IconButton(onPressed: _makecall, icon: const Icon(Icons.call)),
+          )
+        ],
         title: const Text(
-          'Welcome to Lake Garden Banquet Hall',
+          'Welcome to Lake Garden Banquet',
           style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
         ),
         backgroundColor: Colors.deepPurple,
@@ -76,9 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: RefreshIndicator(
         onRefresh: _fetchUnavailableDates,
         child: ListView(
-          // Use ListView to enable scrolling
           children: [
-            // Image Carousel
             SizedBox(
               height: height * 0.3,
               width: width,
@@ -106,7 +120,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
             const SizedBox(height: 10),
 
-            // Description Section
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
               child: Text(
@@ -117,14 +130,14 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 15),
 
-            // Booking Calendar Section
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(6.0),
               child: Text(
-                "Dates marked in red are unavailable",
+                "   Dates marked in red are unavailable",
                 style: TextStyle(
+                  
                   fontSize: width * 0.05,
                   fontWeight: FontWeight.bold,
                   color: Colors.deepPurple,
@@ -132,83 +145,81 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
 
-            // Syncfusion DateRangePicker with special unavailable dates
-            SizedBox(
-              height: height * 0.3, // Set height for the date picker
-              child: SfDateRangePicker(
-                view: DateRangePickerView.month,
-                selectionMode: DateRangePickerSelectionMode.single,
-                monthViewSettings: DateRangePickerMonthViewSettings(
-                  specialDates: unavailableDates,
+            // TableCalendar Implementation
+            TableCalendar(
+              firstDay: DateTime.utc(2024, 1, 1),
+              lastDay: DateTime.utc(2030, 12, 31),
+              focusedDay: DateTime.now(),
+              calendarFormat: CalendarFormat.month,
+              headerStyle: HeaderStyle(
+                formatButtonVisible: false,
+                titleCentered: true,
+                headerPadding: EdgeInsets.zero,
+                leftChevronIcon: Icon(Icons.chevron_left, size: width * 0.06),
+                rightChevronIcon: Icon(Icons.chevron_right, size: width * 0.06),
+              ),
+              calendarStyle: CalendarStyle(
+                todayDecoration: BoxDecoration(
+                  //color: const Color.fromARGB(136, 236, 215, 215),
+                  shape: BoxShape.circle,
                 ),
-                monthCellStyle: const DateRangePickerMonthCellStyle(
-                  specialDatesDecoration: BoxDecoration(
-                    color: Colors.red,
-                    shape: BoxShape.circle,
-                  ),
-                ),
-                onSelectionChanged: (args) {
-                  if (args.value is DateTime) {
-                    DateTime selectedDate = args.value;
-                    if (unavailableDates.contains(selectedDate)) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content: Text('Selected date is unavailable.')),
-                      );
-                    } else {
-                      print('Selected date: $selectedDate');
-                    }
-                  }
+                defaultTextStyle: TextStyle(fontSize: width * 0.035),
+                weekendTextStyle: TextStyle(fontSize: width * 0.035),
+                selectedTextStyle: TextStyle(fontSize: width * 0.035),
+                todayTextStyle: TextStyle(fontSize: width * 0.035),
+              ),
+              calendarBuilders: CalendarBuilders(
+                defaultBuilder: (context, day, focusedDay) {
+                  bool isUnavailable = unavailableDates.any(
+                    (unavailableDay) =>
+                        unavailableDay.year == day.year &&
+                        unavailableDay.month == day.month &&
+                        unavailableDay.day == day.day);
+                  return Container(
+                    margin: EdgeInsets.all(4),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: isUnavailable ? Colors.red : Colors.white,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Text(
+                      '${day.day}',
+                      style: TextStyle(
+                        color: isUnavailable ? Colors.white : Colors.black,
+                        fontSize: width * 0.035,
+                      ),
+                    ),
+                  );
                 },
               ),
+              onDaySelected: (selectedDay, focusedDay) {
+                if (unavailableDates.contains(selectedDay)) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Selected date is unavailable.')),
+                  );
+                } else {
+                  print('Selected date: $selectedDay');
+                }
+              },
             ),
 
             const SizedBox(height: 20),
 
-            // Booking Buttons Row
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  // Button to book an appointment
                   Expanded(
-                    child: ElevatedButton(
-                      onPressed: _bookAppointment,
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                        backgroundColor: Colors.green,
-                        textStyle: TextStyle(
-                          fontSize: width * 0.04,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      child: const Text("Book a visit "),
-                    ),
+                    child: BnqtButton(text: "Book vist", onPressed: _bookAppointment)
                   ),
                   const SizedBox(width: 10),
-
-                  // Button to book the venue
                   Expanded(
-                    child: ElevatedButton(
-                      onPressed: _bookVenue,
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                        backgroundColor: Colors.orange,
-                        textStyle: TextStyle(
-                          fontSize: width * 0.04,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      child: const Text("Book Venue"),
-                    ),
-                  ),
+                      child: BnqtButton(
+                    onPressed: _bookVenue,
+                    text: "Book venue",
+                    backgroundColor: Colors.green,
+                  )),
                 ],
               ),
             ),
@@ -220,16 +231,13 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Method to navigate to the booking appointment screen
   void _bookAppointment() {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const BookAppointmentScreen()),
     );
-    print('Navigate to the appointment booking screen.');
   }
 
-  // Method to navigate to the venue booking screen
   void _bookVenue() {
     Navigator.push(
       context,
@@ -238,6 +246,5 @@ class _HomeScreenState extends State<HomeScreen> {
                 unavailableDates: unavailableDates,
               )),
     );
-    print('Navigate to the venue booking screen.');
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:lakebenquet/widgets/button.dart';
 import '../login/loginscreen.dart'; // Adjust the import path as needed
 
 class ProfileScreen extends StatelessWidget {
@@ -16,7 +17,7 @@ class ProfileScreen extends StatelessWidget {
         // If signed in with Google, disconnect from Google
         await googleSignIn.disconnect();
       }
-      
+
       // Sign out from Firebase
       await FirebaseAuth.instance.signOut();
 
@@ -44,18 +45,23 @@ class ProfileScreen extends StatelessWidget {
           children: [
             if (user.photoURL != null)
               CircleAvatar(
-                radius: 40,
-                backgroundImage: NetworkImage(user.photoURL!), // Display user's profile picture
+                radius: 60,
+                backgroundImage: NetworkImage(user.photoURL!),
               ),
             const SizedBox(height: 16),
             Text(
-              'Name: ${user.displayName ?? "No Name"}', // Display user's name
+              'Name: ${user.displayName ?? "No Name"}',
               style: const TextStyle(fontSize: 18),
             ),
             const SizedBox(height: 8),
             Text(
               'Email: ${user.email}', // Display user's email
               style: const TextStyle(fontSize: 18),
+            ),
+            const SizedBox(height: 20),
+            BnqtButton(
+              onPressed: () {},
+              text: "Payment History",
             ),
             const SizedBox(height: 20),
             ElevatedButton(
